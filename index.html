@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal da Igreja</title>
+    <!-- Vinculação do arquivo de estilos externo -->
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+
+    <!---------------------------------------------
+		CABEÇALHO 
+    -------------------------------------------->
+    <header>
+        <div class="header-container">
+<div class="logo-area">
+    <img src="imagens/logo.png" alt="Logo Igreja Comunidade Livres em Cristo Botucatu" class="logo-img">
+    <h1>Igreja Comunidade Livres em Cristo Botucatu</h1>
+</div>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav id="navbar">
+                <ul>
+                    <li><a class="tab-link active" data-tab="home">Início</a></li>
+                    <li><a class="tab-link" data-tab="pastoral">Palavra Pastoral</a></li>
+                    <li><a class="tab-link" data-tab="oracao">Pedidos de Oração</a></li>
+                    <li><a class="tab-link" data-tab="eventos">Eventos e Avisos</a></li>
+                    <li><a href="#" id="loginBtn" class="login-link">Login Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!---------------------------------------------
+	MODAL DE LOGIN
+    -------------------------------------------->
+    <div class="modal-overlay hidden" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" id="loginModalClose">&times;</button>
+            <h2>Login do Administrador</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminUsuario">Usuário *</label>
+                    <input type="text" id="adminUsuario" class="form-control" required maxlength="40" placeholder="Informe seu usuário">
+                </div>
+                <div class="form-group">
+                    <label for="adminSenha">Senha *</label>
+                    <input type="password" id="adminSenha" class="form-control" required maxlength="40" placeholder="Informe sua senha">
+                </div>
+                <button type="submit" class="btn-submit">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!---------------------------------------------
+	CONTEÚDO PRINCIPAL (SPA)
+    -------------------------------------------->
+    <main>
+        
+        <!-- TELA 1: PRINCIPAL -->
+        <section id="home" class="tab-content active">
+            <div class="home-grid">
+                <article class="card">
+                    <h2>Quem Somos</h2>
+                    <div class="card-text">
+                        Somos uma comunidade acolhedora focada no amor, na fé e no serviço ao próximo. Esta é uma simulação de texto criada para ocupar exatamente a altura visual de oito linhas completas em telas padrão. Aqui compartilhamos nossa história, nossos valores essenciais e o propósito que nos move diariamente a fazer a diferença em nossa vizinhança. Venha caminhar conosco nesta jornada especial.
+                    </div>
+                </article>
+                <article class="card">
+                    <h2>Nossa Missão</h2>
+                    <div class="card-text">
+                        Nossa missão central baseia-se em propagar mensagens de esperança, acolhimento e transformação espiritual para todas as gerações. Através de ações práticas e reuniões comunitárias inspiradoras, buscamos fortalecer laços familiares, apoiar quem precisa de suporte emocional e construir um ambiente seguro para o crescimento pessoal de cada membro frequentador do nosso espaço físico e digital.
+                    </div>
+                </article>
+            </div>
+
+            <!-- Carrossel de Imagens -->
+            <div class="carousel-container">
+	<!-- Carrossel de Imagens com Fotos Locais -->
+	<div class="carousel-track" id="carouselTrack">
+    <div class="carousel-slide" style="background-image: url('imagens/templo2.jpg');"></div>
+  	<div class="carousel-slide" style="background-image: url('imagens/templo1.jpg');"></div>
+  	<div class="carousel-slide" style="background-image: url('imagens/templo3.jpg');"></div>
+	</div>
+
+                <button class="carousel-btn prev" id="prevBtn" aria-label="Slide anterior">&#10094;</button>
+                <button class="carousel-btn next" id="nextBtn" aria-label="Próximo slide">&#10095;</button>
+            </div>
+        </section>
+
+
+    <!---------------------------------------------
+	TELA 2: PALAVRA PASTORAL (LEITURA PÚBLICA)
+    -------------------------------------------->
+
+        <section id="pastoral" class="tab-content">
+            <div class="pastoral-container" id="pastoralPublica">
+                <p style="color: var(--text-muted);">Buscando palavra pastoral mais recente...</p>
+            </div>
+        </section>
+
+    <!---------------------------------------------
+	TELA 3: PEDIDOS DE ORAÇÃO
+    -------------------------------------------->
+
+        <section id="oracao" class="tab-content">
+            <div class="form-container">
+                <h2>Enviar Pedido de Oração</h2>
+                <form id="prayerForm">
+                    <div class="form-group">
+                        <label for="nome">Nome completo *</label>
+                        <input type="text" id="nome" class="form-control" required minlength="3" maxlength="80">
+                    </div>
+                    <div class="form-group">
+                        <label for="pedido">Seu Pedido de Oração *</label>
+                        <textarea id="pedido" class="form-control" required minlength="10" maxlength="1000"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contato">Contato/E-mail (Opcional)</label>
+                        <input type="text" id="contato" class="form-control" maxlength="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="endereco">Endereço (Opcional)</label>
+                        <input type="text" id="endereco" class="form-control" maxlength="150">
+                    </div>
+                    <button type="submit" class="btn-submit">Enviar Pedido com Segurança</button>
+                </form>
+            </div>
+        </section>
+
+    <!---------------------------------------------
+	TELA 4: EVENTOS E AVISOS (DINÂMICA)
+    -------------------------------------------->
+
+        <section id="eventos" class="tab-content">
+            <div class="events-grid">
+                <!-- Caixa de Cultos -->
+                <div class="calendar-box" id="cultosContainer">
+                    <h2>Horário dos Cultos</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Buscando horários...</p>
+                </div>
+
+                <!-- Quadro de Avisos -->
+                <div class="bulletin-box" id="avisosContainer">
+                    <h2>Quadro de Avisos Gerais</h2>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Buscando avisos recentes...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!---------------------------------------------
+	SEÇÃO ADMIN (OCULTA ATÉ LOGIN)
+    -------------------------------------------->
+    <section id="admin" class="admin-section hidden">
+        <div class="admin-header">
+            <h1>Painel Administrativo</h1>
+            <button id="logoutBtn" class="btn-logout">Sair</button>
+        </div>
+            <div class="admin-content">
+
+            	<div class="admin-form-section">
+                <h2>Gerenciar Horários dos Cultos</h2>
+
+                <form id="adminCultosForm" autocomplete="off">
+                    <div class="form-group">
+                        <label for="adminCultoHorario">Horário *</label>
+                        <input type="text" id="adminCultoHorario" class="form-control" required maxlength="80" placeholder="Ex: Domingo - 18:00h">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminCultoDescricao">Descrição *</label>
+                        <input type="text" id="adminCultoDescricao" class="form-control" required maxlength="120" placeholder="Ex: Culto de Celebração e Família">
+                    </div>
+                    <button type="submit" class="btn-submit">Adicionar ao Quadro</button>
+                </form>
+
+                <div style="margin-top: 1.5rem;">
+                    <h3 style="color: var(--primary); margin-bottom: .75rem;">Cultos atuais</h3>
+                    <div id="adminCultosLista" style="display:flex; flex-direction:column; gap: .75rem;"></div>
+                    <button id="adminCultosSalvar" class="btn-submit" style="margin-top: 1rem; width:100%;">Salvar alterações</button>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+                <h2>Gerenciar Avisos</h2>
+
+                <p style="color: var(--text-muted); font-size: .9rem; margin-bottom: 1rem;">Os avisos são salvos no SQLite e exibidos publicamente na tela Eventos e Avisos.</p>
+
+                <form id="adminAvisosForm" autocomplete="off">
+
+                    <div class="form-group">
+                        <label for="adminAvisoData">Data *</label>
+                        <input type="text" id="adminAvisoData" class="form-control" required maxlength="40" placeholder="Ex: Domingo ou 07/06/2026">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminAvisoTitulo">Título *</label>
+                        <input type="text" id="adminAvisoTitulo" class="form-control" required maxlength="120" placeholder="Ex: Ensaio">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminAvisoTexto">Texto *</label>
+                        <textarea id="adminAvisoTexto" class="form-control" required minlength="5" maxlength="2000" placeholder="Digite o conteúdo do aviso."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Adicionar ao Quadro</button>
+                </form>
+
+                <div style="margin-top: 1.5rem;">
+                    <h3 style="color: var(--primary); margin-bottom: .75rem;">Avisos atuais</h3>
+                    <div id="adminAvisosLista" style="display:flex; flex-direction:column; gap: .75rem;"></div>
+                    <div style="display:flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap;">
+                        <button id="adminAvisosSalvar" class="btn-submit" style="width: 100%;">Salvar alterações</button>
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+                <h2>Pedidos de Oração</h2>
+                <p style="color: var(--text-muted); font-size: .9rem; margin-bottom: 1rem;">
+                    Baixe os pedidos de oração registrados em arquivo TXT (UTF-8). Pedidos antigos são removidos automaticamente após 1 mês.
+                </p>
+                <div style="display:flex; gap: .75rem; flex-wrap: wrap;">
+                    <button id="adminPedidosOracaoBaixar" class="btn-submit" style="width: 100%; max-width: 420px;">Baixar pedidos de oração (.txt)</button>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">
+
+                <h2>Gerar Nova Palavra Pastoral</h2>
+                <form id="adminPastoralForm">
+
+
+                    <div class="form-group">
+                        <label for="adminCargoPastor">Cargo *</label>
+                        <input type="text" id="adminCargoPastor" class="form-control" required maxlength="60" placeholder="Ex: Pastor, Líder, Missionário">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminNomePastor">Nome *</label>
+                        <input type="text" id="adminNomePastor" class="form-control" required maxlength="80" placeholder="Ex: Pr. Rodrigo Aviles">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminDataPastoral">Data *</label>
+                        <input type="date" id="adminDataPastoral" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminTextoPastoral">Palavra *</label>
+                        <textarea id="adminTextoPastoral" class="form-control" required minlength="20" maxlength="2000" placeholder="Digite a mensagem que será exibida como palavra pastoral."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Publicar Palavra Pastoral</button>
+                </form>
+            </div>
+
+            <div class="admin-preview-section">
+                <h2>Prévia</h2>
+                <div class="pastoral-container" id="adminPreview">
+                    <p style="color: var(--text-muted);">A prévia aparecerá aqui.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Endereço</h3>
+                <p>Av. Leonardo Vilas Boas, 3329</p>
+                <p> Vila Nova Botucatu - Botucatu - SP</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <p>Email: botucatu@comunidadelivre.net</p>
+                <!-- <p>CNPJ: 00.000.000/0001-00</p> -->
+            </div>
+            <div class="footer-section">
+                <h3>Redes Sociais</h3>
+                <p>
+                    <a href="https://www.instagram.com/comunidade.livrebotucatu/">Instagram</a>
+                    <a href="https://www.facebook.com/comunidadelivreemcristobotucatu/" style="margin-left: 10px;">Facebook</a>
+                </p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Igreja Comunidade Livres em Cristo BTU. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <!---------------------------------------------
+		WHATSAPP FLUTUANTE
+    -------------------------------------------->
+
+    <a href="https://wa.me" class="whatsapp-float" target="_blank" rel="noopener noreferrer" title="Fale Conosco no WhatsApp">
+    &#128172;
+    </a>
+
+    <!---------------------------------------------
+		BANNER LGPD
+    -------------------------------------------->
+
+    <div class="lgpd-banner" id="lgpdBanner">
+        <span>Respeitamos sua privacidade. Os dados enviados nos formulários de oração são tratados de maneira confidencial e protegida.</span>
+        <button class="lgpd-btn" id="lgpdAccept">Entendi e Aceito</button>
+    </div>
+
+    <!-- Vinculação do arquivo lógico de scripts no final do body -->
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+

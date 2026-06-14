@@ -1,0 +1,797 @@
+/* --- VARIÁVEIS DE DESIGN --- */
+:root {
+    --primary: #1e3a8a;       
+    --primary-hover: #172554;
+    --accent: #25d366;        
+    --bg-light: #f8fafc;      
+    --bg-card: #ffffff;       
+    --text-main: #1e293b;     
+    --text-muted: #64748b;    
+    --border: #e2e8f0;        
+    --transition: all 0.3s ease;
+}
+
+/* --- CONFIGURAÇÕES GERAIS --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.logo-img {
+    height: 60px;        /* Mantém a altura alinhada com o cabeçalho */
+    width: auto;         /* Ajusta a largura proporcionalmente */
+    object-fit: contain; /* Garante que a imagem não fique distorcida */
+}
+
+
+main {
+    flex: 1;
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* --- CABEÇALHO E NAVEGAÇÃO --- */
+header {
+    background-color: var(--bg-card);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-placeholder {
+    width: 45px;
+    height: 45px;
+    background-color: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+h1 {
+    font-size: 1.3rem;
+    color: var(--primary);
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    gap: 1.5rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 500;
+    padding: 0.5rem 0;
+    transition: var(--transition);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+nav ul li a:hover, nav ul li a.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.login-link {
+    background-color: var(--primary);
+    color: white !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px;
+    border-bottom: none !important;
+}
+
+.login-link:hover {
+    background-color: var(--primary-hover);
+}
+
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background-color: var(--primary);
+    transition: var(--transition);
+}
+
+/* --- MODAL DE LOGIN --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    position: relative;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+    text-align: center;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+.modal-close:hover {
+    color: var(--primary);
+}
+
+/* --- SEÇÃO ADMIN --- */
+.admin-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-light);
+    padding-top: 80px;
+}
+
+.admin-header {
+    background-color: var(--bg-card);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.admin-header h1 {
+    color: var(--primary);
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.btn-logout {
+    background-color: #e53e3e;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-logout:hover {
+    background-color: #c53030;
+}
+
+.admin-content {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+}
+
+.admin-form-section,
+.admin-preview-section {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.admin-form-section h2,
+.admin-preview-section h2 {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    margin-top: 0;
+}
+
+.admin-form-section form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* --- UTILIDADES --- */
+.hidden {
+    display: none !important;
+}
+
+
+/* --- CONTROLE DE ABAS (SPA) --- */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- TELA 1: PRINCIPAL --- */
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+    margin-bottom: 1rem;
+    color: var(--primary);
+}
+
+.card-text {
+    color: var(--text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: justify;
+}
+
+.carousel-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+    min-width: 100%;
+    height: 400px;
+    background-color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-size: cover;
+    background-position: center;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255,255,255,0.8);
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--primary);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-btn:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+.carousel-btn.prev { left: 15px; }
+.carousel-btn.next { right: 15px; }
+
+/* --- TELA 2: PALAVRA PASTORAL --- */
+.pastoral-interactive {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
+    align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pastoral-form {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.pastoral-form h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+}
+
+.pastoral-container {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.pastoral-login,
+    .pastoral-form,
+    .pastoral-container {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+    }
+
+    .pastoral-login h2,
+    .pastoral-form h2 {
+        margin-bottom: 1.5rem;
+        color: var(--primary);
+    }
+
+    .pastoral-meta {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .pastor-details {
+        flex: 1;
+    }
+
+    .pastor-cargo {
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .pastor-photo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--primary);
+        background-color: #cbd5e1;
+    }
+
+    .pastoral-text {
+        text-align: justify;
+        color: var(--text-main);
+        margin-top: 1.5rem;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+/* --- TELA 3: PEDIDOS DE ORAÇÃO --- */
+.form-container {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-container h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+    background-color: var(--bg-light);
+    transition: var(--transition);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.btn-submit {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    transition: var(--transition);
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-hover);
+}
+
+/* --- TELA 4: EVENTOS E AVISOS --- */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.calendar-box, .bulletin-box {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.events-grid h2 {
+    color: var(--primary);
+    margin-bottom: 1.25rem;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.culto-item {
+    background-color: #f1f5f9;
+    padding: 0.75rem;
+    border-left: 4px solid var(--primary);
+    margin-bottom: 0.75rem;
+    border-radius: 0 6px 6px 0;
+}
+
+.culto-time {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.notice-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed var(--border);
+}
+
+.notice-item:last-child {
+    border-bottom: none;
+}
+
+.notice-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+/* --- RODAPÉ --- */
+footer {
+    background-color: #0f172a;
+    color: #94a3b8;
+    padding: 2rem 1rem 1rem 1rem;
+    margin-top: 4rem;
+    font-size: 0.9rem;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #334155;
+}
+
+.footer-content a {
+    color: #94a3b8;
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    color: white;
+}
+
+.footer-section h3 {
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 1.5rem;
+    font-size: 0.8rem;
+}
+
+/* --- WHATSAPP FLUTUANTE --- */
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--accent);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 99;
+    text-decoration: none;
+    font-size: 1.8rem;
+    transition: var(--transition);
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+}
+
+/* --- BANNER LGPD --- */
+.lgpd-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #1e293b;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.2);
+    font-size: 0.85rem;
+}
+
+.lgpd-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-left: 1rem;
+    white-space: nowrap;
+}
+
+/* --- RESPONSIVIDADE (MOBILE) --- */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
+
+    nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--bg-card);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border-top: 1px solid var(--border);
+    }
+
+    nav.open {
+        display: block;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 0;
+    }
+
+    nav ul li a {
+        display: block;
+        padding: 1rem 2rem;
+        border-bottom: none;
+    }
+
+    nav ul li a.active {
+        background-color: rgba(30, 58, 138, 0.05);
+        border-left: 4px solid var(--primary);
+    }
+
+    .carousel-slide {
+        height: 250px;
+    }
+
+  /* --- BANNER LGPD --- */
+.lgpd-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #1e293b;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.lgpd-btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+.lgpd-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+/* --- RESPONSIVIDADE (MOBILE) --- */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex; /* Exibe o botão hambúrguer no mobile */
+    }
+
+    nav {
+        display: none; /* Esconde o menu padrão */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: var(--bg-card);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 1rem;
+    }
+
+    /* Esta é a classe que o seu JS ativa e que estava faltando */
+    nav.open {
+        display: block; 
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .header-container {
+        position: relative;
+    }
+
+    .pastoral-interactive {
+        display: block;
+    }
+
+    .pastoral-container,
+    .pastoral-form {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .admin-content {
+        display: block;
+    }
+
+    .admin-form-section,
+    .admin-preview-section {
+        margin-bottom: 2rem;
+    }
+
+    .lgpd-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+

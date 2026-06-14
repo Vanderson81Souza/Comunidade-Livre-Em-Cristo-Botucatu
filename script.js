@@ -45,6 +45,9 @@ const adminLoginForm = document.getElementById('adminLoginForm');
 const adminSection = document.getElementById('admin');
 const logoutBtn = document.getElementById('logoutBtn');
 
+const toggleAdminSenha = document.getElementById('toggleAdminSenha');
+
+
 const ADMIN_AUTH_KEY = 'adminAccessGranted';
 const ADMIN_TOKEN_KEY = 'adminToken';
 const ADMIN_TOKEN_EXP_KEY = 'adminTokenExpiresAt';
@@ -68,6 +71,18 @@ loginModal.addEventListener('click', (e) => {
         loginModal.classList.add('hidden');
     }
 });
+
+// Alterna visibilidade da senha (login admin)
+if (toggleAdminSenha) {
+    toggleAdminSenha.addEventListener('click', () => {
+        const senhaInput = document.getElementById('adminSenha');
+        if (!senhaInput) return;
+
+        const isPassword = senhaInput.type === 'password';
+        senhaInput.type = isPassword ? 'text' : 'password';
+        toggleAdminSenha.textContent = isPassword ? 'Ocultar' : 'Mostrar';
+    });
+}
 
 if (adminLoginForm) {
     adminLoginForm.addEventListener('submit', async (e) => {

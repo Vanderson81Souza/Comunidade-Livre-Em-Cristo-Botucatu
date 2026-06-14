@@ -136,6 +136,31 @@ nav ul li a:hover, nav ul li a.active {
 }
 
 /* --- MODAL DE LOGIN --- */
+
+/* --- Mostrar/ocultar senha (login admin) --- */
+.password-field {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.password-field .form-control {
+    flex: 1;
+}
+.password-toggle {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+.password-toggle:hover {
+    background: var(--primary-hover);
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;

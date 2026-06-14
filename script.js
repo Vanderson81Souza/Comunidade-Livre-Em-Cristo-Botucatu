@@ -46,7 +46,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 const ADMIN_AUTH_KEY = 'adminAccessGranted';
 const ADMIN_CREDENTIALS = {
     usuario: 'admin',
-    senha: 'igreja123'
+    senha: '@#igreja@#'
 };
 
 loginBtn.addEventListener('click', (e) => {

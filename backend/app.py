@@ -5,19 +5,29 @@ from datetime import datetime
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+# security: tokens em memória (não ideal para múltiplos processos)
+
+
 APP_DIR = os.path.dirname(__file__)
 DB_PATH = os.path.join(APP_DIR, "db.sqlite")
 
 # Credenciais (simples). Em produção, usar hash e melhor gestão.
 ADMIN_USER = os.environ.get("ADMIN_USER", "admin")
-ADMIN_PASS = os.environ.get("ADMIN_PASS", "igreja123")
+ADMIN_PASS = os.environ.get("ADMIN_PASS", "@#igreja@#")
 
-# Token fixo para simplificar o uso no projeto estático.
-# O token é emitido após login correto.
-FIXED_TOKEN = os.environ.get("ADMIN_TOKEN", "dev-admin-token")
+# Token por sessão (randômico) para reduzir risco de reutilização.
+# Ao fazer login correto, o backend gera um token aleatório e valida por memória.
+# Obs: em produção, use Redis/BD para armazenar sessões e rotação/expiração.
+import secrets
+
+TOKENS = {}  # token -> {expires_at}
+SESSION_TTL_SECONDS = int(os.environ.get("ADMIN_SESSION_TTL_SECONDS", "3600"))
+
 
 app = Flask(__name__, static_folder=None)
-CORS(app)  # permite requests do seu index.html em localhost/arquivos
+# Restringe CORS para reduzir superfície de ataque
+CORS(app, origins=["http://127.0.0.1", "http://localhost"], supports_credentials=False)
+
 
 
 def get_db():
@@ -101,7 +111,14 @@ def require_admin():
     if not auth.startswith("Bearer "):
         return False
     token = auth.split(" ", 1)[1].strip()
-    return token == FIXED_TOKEN
+    rec = TOKENS.get(token)
+    if not rec:
+        return False
+    if rec.get("expires_at") is not None and rec["expires_at"] < datetime.utcnow().timestamp():
+        TOKENS.pop(token, None)
+        return False
+    return True
+
 
 
 def parse_list_payload(payload):
@@ -119,9 +136,13 @@ def api_login():
     senha = data.get("senha") or ""
 
     if usuario == ADMIN_USER and senha == ADMIN_PASS:
-        return jsonify({"ok": True, "token": FIXED_TOKEN})
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.utcnow().timestamp() + SESSION_TTL_SECONDS
+        TOKENS[token] = {"expires_at": expires_at}
+        return jsonify({"ok": True, "token": token, "ttl_seconds": SESSION_TTL_SECONDS})
 
     return jsonify({"ok": False, "error": "Credenciais inválidas"}), 401
+
 
 
 @app.get("/api/cultos")

@@ -3,6 +3,8 @@
 // =========================================================================
 const API_BASE_URL = 'http://127.0.0.1:5000';
 let ADMIN_TOKEN = null;
+let adminSessionExpiresAt = null;
+
 
 
 // =========================================================================
@@ -44,15 +46,18 @@ const adminSection = document.getElementById('admin');
 const logoutBtn = document.getElementById('logoutBtn');
 
 const ADMIN_AUTH_KEY = 'adminAccessGranted';
-const ADMIN_CREDENTIALS = {
-    usuario: 'admin',
-    senha: '@#igreja@#'
-};
+const ADMIN_TOKEN_KEY = 'adminToken';
+const ADMIN_TOKEN_EXP_KEY = 'adminTokenExpiresAt';
+
+// credentials NÃO ficam hardcoded no front (segurança)
+
+
 
 loginBtn.addEventListener('click', (e) => {
     e.preventDefault();
     loginModal.classList.remove('hidden');
 });
+
 
 loginModalClose.addEventListener('click', () => {
     loginModal.classList.add('hidden');
@@ -65,36 +70,40 @@ loginModal.addEventListener('click', (e) => {
 });
 
 if (adminLoginForm) {
-    adminLoginForm.addEventListener('submit', (e) => {
+    adminLoginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const usuario = document.getElementById('adminUsuario').value.trim();
         const senha = document.getElementById('adminSenha').value.trim();
 
-        if (usuario === ADMIN_CREDENTIALS.usuario && senha === ADMIN_CREDENTIALS.senha) {
+        try {
+            const data = await autenticarNoBackend({ usuario, senha });
+            // só abre UI se o backend autorizou
+            if (!data || !data.token) throw new Error('Token não recebido');
+
             localStorage.setItem(ADMIN_AUTH_KEY, 'true');
+            localStorage.setItem(ADMIN_TOKEN_KEY, data.token);
+            localStorage.setItem(ADMIN_TOKEN_EXP_KEY, String(Date.now() + (data.ttl_seconds * 1000)));
+
             loginModal.classList.add('hidden');
             adminLoginForm.reset();
             mostrarPainelAdmin();
-            // Emite token via API (para facilitar autenticação)
-            autenticarNoBackend().catch(() => {
-                // fallback: continua sem token (salvamentos falharão)
-            });
-            return;
+        } catch (err) {
+            console.error(err);
+            alert('Usuário ou senha inválidos. Tente novamente.');
         }
-
-
-        alert('Usuário ou senha inválidos. Tente novamente.');
     });
 }
+
 
 function mostrarPainelAdmin() {
     adminSection.classList.remove('hidden');
     main.style.display = 'none';
     tabContents.forEach(item => item.classList.remove('active'));
 
-    // Monta listas do admin vindas do SQLite
+    // Monta listas do admin vindas do SQLite (protegidas)
     carregarAdminCultosEAvisos().catch(() => {});
 }
+
 
 async function carregarAdminCultosEAvisos() {
     const token = obterTokenBackend();
@@ -212,18 +221,30 @@ function ocultarPainelAdmin() {
 if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem(ADMIN_AUTH_KEY);
+        localStorage.removeItem(ADMIN_TOKEN_KEY);
+        localStorage.removeItem(ADMIN_TOKEN_EXP_KEY);
+        ADMIN_TOKEN = null;
         ocultarPainelAdmin();
     });
 }
 
+
 function verificaAutenticacaoAdmin() {
     if (localStorage.getItem(ADMIN_AUTH_KEY) === 'true') {
+        // valida token (expiração) apenas pelo front;
+        // endpoints continuarão protegidos no backend.
+        const token = obterTokenBackend();
+        if (!token) {
+            localStorage.removeItem(ADMIN_AUTH_KEY);
+            return false;
+        }
         mostrarPainelAdmin();
         carregarUltimaPalavraPastoral();
         return true;
     }
     return false;
 }
+
 
 // =========================================================================
 // 3. CARROSSEL DE IMAGENS
@@ -409,24 +430,38 @@ function carregarUltimaPalavraPastoral() {
     }
 }
 
-async function autenticarNoBackend() {
-    // Envia credenciais atuais (admin fixo do front)
+async function autenticarNoBackend({ usuario, senha }) {
     const resp = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ usuario: ADMIN_CREDENTIALS.usuario, senha: ADMIN_CREDENTIALS.senha })
+        body: JSON.stringify({ usuario, senha })
     });
 
     if (!resp.ok) throw new Error('Falha no login da API');
     const data = await resp.json();
     if (!data.ok || !data.token) throw new Error('Token inválido');
+
     ADMIN_TOKEN = data.token;
-    localStorage.setItem('adminToken', ADMIN_TOKEN);
+    adminSessionExpiresAt = Date.now() + (data.ttl_seconds * 1000);
+    return data;
 }
 
 function obterTokenBackend() {
-    return ADMIN_TOKEN || localStorage.getItem('adminToken');
+    const token = ADMIN_TOKEN || localStorage.getItem(ADMIN_TOKEN_KEY);
+    const exp = localStorage.getItem(ADMIN_TOKEN_EXP_KEY);
+
+    if (!token) return null;
+    if (exp && Number(exp) < Date.now()) {
+        localStorage.removeItem(ADMIN_AUTH_KEY);
+        localStorage.removeItem(ADMIN_TOKEN_KEY);
+        localStorage.removeItem(ADMIN_TOKEN_EXP_KEY);
+        ADMIN_TOKEN = null;
+        return null;
+    }
+
+    return token;
 }
+
 
 
 function carregarPalavraPastoralDaAPI() {
@@ -500,7 +535,8 @@ async function carregarCultosERAvisosDaAPI() {
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     // token pode ter ficado salvo da última sessão
-    ADMIN_TOKEN = localStorage.getItem('adminToken');
+ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
+
 
     verificaAutenticacaoAdmin();
     carregarUltimaPalavraPastoral();

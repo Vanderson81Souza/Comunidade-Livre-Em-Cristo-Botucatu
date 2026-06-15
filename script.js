@@ -5,6 +5,50 @@ const API_BASE_URL = 'http://127.0.0.1:5000';
 let ADMIN_TOKEN = null;
 let adminSessionExpiresAt = null;
 
+// =========================================================================
+// 0. MODO GITHUB PAGES (OFFLINE)
+// =========================================================================
+const IS_PAGES = (() => {
+    const host = (location && location.hostname) ? location.hostname : '';
+    // localmente: 127.0.0.1 / localhost (usa API)
+    // GitHub Pages: normalmente um domínio diferente disso
+    return host && host !== '127.0.0.1' && host !== 'localhost';
+})();
+
+const LS_KEYS = {
+    cultos: 'pages_cultos',
+    avisos: 'pages_avisos',
+    pedidosOracao: 'pages_pedidos_oracao',
+    adminOffline: 'pages_admin_offline'
+};
+
+const DEFAULT_CULTOS = [
+    { id: 1, horario: 'Domingo - 18:00h', descricao: 'Culto de Celebração e Família' },
+    { id: 2, horario: 'Terça-feira - 20:00h', descricao: 'Primeiro o Reino' },
+    { id: 3, horario: 'Quinta-feira - 19:30h', descricao: 'Estudo Biblico' }
+];
+
+const DEFAULT_AVISOS = [
+    { id: 1, data: 'Domingo', titulo: 'Ensaio', texto: 'Equipe de louvor 10:00.' },
+    { id: 2, data: 'Quarta', titulo: 'Ensaio', texto: 'Equipe de Danças e Artes 19:30h.' },
+    { id: 3, data: '07/06/2026', titulo: 'Jantar de Casais', texto: 'Venha participar do maravilho jantar de casais dia 04/07/2026 19:30h.' }
+];
+
+function lsGetJson(key, fallback) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return fallback;
+        const parsed = JSON.parse(raw);
+        return parsed ?? fallback;
+    } catch (_) {
+        return fallback;
+    }
+}
+
+function lsSetJson(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
 
 
 // =========================================================================
@@ -316,6 +360,24 @@ form.addEventListener('submit', async (e) => {
     const contatoSemXss = sanitizeInput(document.getElementById('contato').value.trim());
     const enderecoSemXss = sanitizeInput(document.getElementById('endereco').value.trim());
 
+    // GitHub Pages offline: salva em localStorage
+    if (IS_PAGES) {
+        const pedidos = lsGetJson(LS_KEYS.pedidosOracao, []);
+        pedidos.unshift({
+            nome: nomeSemXss,
+            pedido: pedidoSemXss,
+            contato: contatoSemXss || '',
+            endereco: enderecoSemXss || '',
+            criado_em: new Date().toISOString()
+        });
+        // mantém um tamanho razoável
+        lsSetJson(LS_KEYS.pedidosOracao, pedidos.slice(0, 200));
+
+        alert(`Obrigado, ${nomeSemXss}. Seu pedido de oração foi registrado (modo Pages offline)!`);
+        form.reset();
+        return;
+    }
+
     const payload = montarPayloadPedidoOracao({
         nome: nomeSemXss,
         pedido: pedidoSemXss,
@@ -445,7 +507,15 @@ function carregarUltimaPalavraPastoral() {
     }
 }
 
-async function autenticarNoBackend({ usuario, senha }) {
+async function autenticarNoBackend({ usuario, senha } = {}) {
+    if (IS_PAGES) {
+        // Modo GitHub Pages offline: sem backend, login sempre "válido"
+        const data = { ok: true, token: 'pages-offline-token', ttl_seconds: 999999 };
+        ADMIN_TOKEN = data.token;
+        adminSessionExpiresAt = Date.now() + (data.ttl_seconds * 1000);
+        return data;
+    }
+
     const resp = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -532,6 +602,12 @@ function renderizarEventosEAvisos(dados) {
 }
 
 async function carregarCultosERAvisosDaAPI() {
+    if (IS_PAGES) {
+        const cultos = lsGetJson(LS_KEYS.cultos, DEFAULT_CULTOS);
+        const avisos = lsGetJson(LS_KEYS.avisos, DEFAULT_AVISOS);
+        return { cultos, avisos };
+    }
+
     const cultosResp = await fetch(`${API_BASE_URL}/api/cultos`);
     const avisosResp = await fetch(`${API_BASE_URL}/api/avisos`);
 
@@ -594,6 +670,16 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
     }
 
     async function salvarCultos() {
+        if (IS_PAGES) {
+            const cultos = (adminEstado.cultos || []).map(c => ({
+                horario: c.horario,
+                descricao: c.descricao
+            }));
+            lsSetJson(LS_KEYS.cultos, cultos);
+            alert('Horários dos cultos atualizados (Pages offline)!');
+            return;
+        }
+
         const token = obterTokenBackend();
         if (!token) return alert('Faça login no admin para salvar.');
 
@@ -618,6 +704,17 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
     }
 
     async function salvarAvisos() {
+        if (IS_PAGES) {
+            const avisos = (adminEstado.avisos || []).map(a => ({
+                data: a.data,
+                titulo: a.titulo,
+                texto: a.texto
+            }));
+            lsSetJson(LS_KEYS.avisos, avisos);
+            alert('Avisos atualizados (Pages offline)!');
+            return;
+        }
+
         const token = obterTokenBackend();
         if (!token) return alert('Faça login no admin para salvar.');
 
@@ -643,6 +740,34 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
     }
 
     async function baixarPedidosOracaoTxt() {
+        if (IS_PAGES) {
+            const pedidos = lsGetJson(LS_KEYS.pedidosOracao, []);
+            const linhas = [];
+            (pedidos || []).forEach((p, idx) => {
+                linhas.push(`PEDIDO ${idx + 1}`);
+                linhas.push(`Data/Hora: ${p.criado_em || ''}`);
+                linhas.push(`Nome: ${p.nome || ''}`);
+                linhas.push('Pedido de Oração:');
+                linhas.push(`${p.pedido || ''}`);
+                linhas.push(`Contato/E-mail: ${p.contato || ''}`);
+                linhas.push(`Endereço: ${p.endereco || ''}`);
+                linhas.push('-'.repeat(60));
+            });
+
+            const txt = (linhas.join('\n').trim() + '\n') || 'Nenhum pedido registrado.\n';
+            const blob = new Blob([txt], { type: 'text/plain; charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'pedidos-oracao.txt';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+            return;
+        }
+
         const token = obterTokenBackend();
         if (!token) return alert('Faça login no admin para baixar.');
 

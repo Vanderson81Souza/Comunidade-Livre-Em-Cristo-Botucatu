@@ -159,12 +159,32 @@ function mostrarPainelAdmin() {
     main.style.display = 'none';
     tabContents.forEach(item => item.classList.remove('active'));
 
-    // Monta listas do admin vindas do SQLite (protegidas)
-    carregarAdminCultosEAvisos().catch(() => {});
+    // Monta listas do admin (SQLite no backend ou localStorage no GitHub Pages)
+    carregarAdminCultosEAvisos()
+        .catch(() => {});
+
+    // Garante sincronização imediata da parte pública (cultos/avisos)
+    carregarCultosERAvisosDaAPI()
+        .then(dados => renderizarEventosEAvisos(dados))
+        .catch(() => {});
 }
 
 
 async function carregarAdminCultosEAvisos() {
+    // No GitHub Pages não existe backend Flask acessível.
+    // Então o CRUD deve ser alimentado diretamente do localStorage.
+    if (IS_PAGES) {
+        adminEstado.cultos = lsGetJson(LS_KEYS.cultos, DEFAULT_CULTOS);
+        adminEstado.avisos = lsGetJson(LS_KEYS.avisos, DEFAULT_AVISOS);
+
+        adminEstado.editandoCultosIndex = null;
+        adminEstado.editandoAvisosIndex = null;
+
+        renderAdminCultos();
+        renderAdminAvisos();
+        return;
+    }
+
     const t = obterTokenBackend();
     if (!t) return;
 

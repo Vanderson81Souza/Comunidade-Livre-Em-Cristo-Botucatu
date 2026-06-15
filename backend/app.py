@@ -26,7 +26,11 @@ SESSION_TTL_SECONDS = int(os.environ.get("ADMIN_SESSION_TTL_SECONDS", "3600"))
 
 app = Flask(__name__, static_folder=None)
 # Restringe CORS para reduzir superfície de ataque
-CORS(app, origins=["http://127.0.0.1", "http://localhost"], supports_credentials=False)
+CORS(app, origins=[
+    "http://127.0.0.1",
+    "http://localhost",
+    "https://vanderson81souza.github.io"
+], supports_credentials=False)
 
 
 

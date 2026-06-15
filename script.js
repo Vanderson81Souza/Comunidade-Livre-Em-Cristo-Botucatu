@@ -165,16 +165,6 @@ function mostrarPainelAdmin() {
 
 
 async function carregarAdminCultosEAvisos() {
-    const token = obterTokenBackend();
-    if (!token) {
-        // ainda não logado na API; tenta emitir token e recarregar
-        try {
-            await autenticarNoBackend();
-        } catch (e) {
-            return;
-        }
-    }
-
     const t = obterTokenBackend();
     if (!t) return;
 
@@ -191,6 +181,9 @@ async function carregarAdminCultosEAvisos() {
     adminEstado.cultos = (cultosData.items || []);
     adminEstado.avisos = (avisosData.items || []);
 
+    adminEstado.editandoCultosIndex = null;
+    adminEstado.editandoAvisosIndex = null;
+
     renderAdminCultos();
     renderAdminAvisos();
 }
@@ -198,7 +191,9 @@ async function carregarAdminCultosEAvisos() {
 
 const adminEstado = {
     cultos: [],
-    avisos: []
+    avisos: [],
+    editandoCultosIndex: null,
+    editandoAvisosIndex: null
 };
 
 function renderAdminCultos() {
@@ -213,19 +208,48 @@ function renderAdminCultos() {
         card.style.padding = '0.75rem';
         card.style.background = 'var(--bg-light)';
 
+        const isEditing = adminEstado.editandoCultosIndex === idx;
+
         card.innerHTML = `
             <div style="display:flex; justify-content:space-between; gap: 1rem; align-items:flex-start;">
                 <div>
                     <div style="font-weight:700; color: var(--primary);">${sanitizeInput(culto.horario || '')}</div>
                     <div style="color: var(--text-muted); margin-top: .25rem;">${sanitizeInput(culto.descricao || '')}</div>
+                    ${isEditing ? `<div style="margin-top:.5rem; font-size:.85rem; color: var(--text-muted);">Editando...</div>` : ``}
                 </div>
-                <button class="btn-logout" data-remove-culto-index="${idx}" style="background:#e53e3e; padding: .5rem .75rem; border-radius:6px; border:none; cursor:pointer;">Remover</button>
+                <div style="display:flex; gap:.5rem; flex-wrap:wrap; justify-content:flex-end;">
+                    <button class="btn-logout" data-edit-culto-index="${idx}" style="background: #3182ce; color: white; padding: .5rem .75rem; border-radius:6px; border:none; cursor:pointer;">Editar</button>
+                    <button class="btn-logout" data-remove-culto-index="${idx}" style="background:#e53e3e; color: white; padding: .5rem .75rem; border-radius:6px; border:none; cursor:pointer;">Remover</button>
+                </div>
             </div>
         `;
+
+        card.querySelector('[data-edit-culto-index]').addEventListener('click', () => {
+            const i = Number(card.querySelector('[data-edit-culto-index]').getAttribute('data-edit-culto-index'));
+            const item = adminEstado.cultos[i];
+            if (!item) return;
+
+            adminEstado.editandoCultosIndex = i;
+
+            const horarioInput = document.getElementById('adminCultoHorario');
+            const descricaoInput = document.getElementById('adminCultoDescricao');
+
+            if (horarioInput) horarioInput.value = item.horario || '';
+            if (descricaoInput) descricaoInput.value = item.descricao || '';
+
+            if (horarioInput) horarioInput.focus();
+            renderAdminCultos();
+        });
 
         card.querySelector('[data-remove-culto-index]').addEventListener('click', () => {
             const i = Number(card.querySelector('[data-remove-culto-index]').getAttribute('data-remove-culto-index'));
             adminEstado.cultos.splice(i, 1);
+
+            if (adminEstado.editandoCultosIndex !== null) {
+                if (adminEstado.editandoCultosIndex === i) adminEstado.editandoCultosIndex = null;
+                else if (adminEstado.editandoCultosIndex > i) adminEstado.editandoCultosIndex -= 1;
+            }
+
             renderAdminCultos();
         });
 
@@ -245,20 +269,51 @@ function renderAdminAvisos() {
         card.style.padding = '0.75rem';
         card.style.background = 'var(--bg-light)';
 
+        const isEditing = adminEstado.editandoAvisosIndex === idx;
+
         card.innerHTML = `
             <div style="display:flex; justify-content:space-between; gap: 1rem; align-items:flex-start;">
                 <div>
                     <div style="font-weight:700; color: var(--primary);">${sanitizeInput(aviso.titulo || '')}</div>
                     <div style="color: var(--text-muted); margin-top: .25rem;">${sanitizeInput(aviso.data || '')}</div>
                     <div style="margin-top: .5rem; color: var(--text-main);">${sanitizeInput(aviso.texto || '')}</div>
+                    ${isEditing ? `<div style="margin-top:.5rem; font-size:.85rem; color: var(--text-muted);">Editando...</div>` : ``}
                 </div>
-                <button class="btn-logout" data-remove-aviso-index="${idx}" style="background:#e53e3e; padding: .5rem .75rem; border-radius:6px; border:none; cursor:pointer;">Remover</button>
+                <div style="display:flex; gap:.5rem; flex-wrap:wrap; justify-content:flex-end;">
+                    <button class="btn-logout" data-edit-aviso-index="${idx}" style="background: #3182ce; color: white; padding: .5rem .75rem; border-radius:6px; border:none; cursor:pointer;">Editar</button>
+                    <button class="btn-logout" data-remove-aviso-index="${idx}" style="background:#e53e3e; color: white; padding: .5rem .75rem; border-radius:6px; border:none; cursor:pointer;">Remover</button>
+                </div>
             </div>
         `;
+
+        card.querySelector('[data-edit-aviso-index]').addEventListener('click', () => {
+            const i = Number(card.querySelector('[data-edit-aviso-index]').getAttribute('data-edit-aviso-index'));
+            const item = adminEstado.avisos[i];
+            if (!item) return;
+
+            adminEstado.editandoAvisosIndex = i;
+
+            const dataInput = document.getElementById('adminAvisoData');
+            const tituloInput = document.getElementById('adminAvisoTitulo');
+            const textoInput = document.getElementById('adminAvisoTexto');
+
+            if (dataInput) dataInput.value = item.data || '';
+            if (tituloInput) tituloInput.value = item.titulo || '';
+            if (textoInput) textoInput.value = item.texto || '';
+
+            if (dataInput) dataInput.focus();
+            renderAdminAvisos();
+        });
 
         card.querySelector('[data-remove-aviso-index]').addEventListener('click', () => {
             const i = Number(card.querySelector('[data-remove-aviso-index]').getAttribute('data-remove-aviso-index'));
             adminEstado.avisos.splice(i, 1);
+
+            if (adminEstado.editandoAvisosIndex !== null) {
+                if (adminEstado.editandoAvisosIndex === i) adminEstado.editandoAvisosIndex = null;
+                else if (adminEstado.editandoAvisosIndex > i) adminEstado.editandoAvisosIndex -= 1;
+            }
+
             renderAdminAvisos();
         });
 
@@ -647,8 +702,17 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
 
             if (!horario || !descricao) return;
 
-            // adiciona em memória; persiste ao clicar em Salvar
-            adminEstado.cultos.push({ horario, descricao });
+            // CRUD em memória: se estiver editando, substitui; senão adiciona
+            if (adminEstado.editandoCultosIndex !== null) {
+                const i = adminEstado.editandoCultosIndex;
+                if (adminEstado.cultos[i]) {
+                    adminEstado.cultos[i] = { ...adminEstado.cultos[i], horario, descricao };
+                }
+                adminEstado.editandoCultosIndex = null;
+            } else {
+                adminEstado.cultos.push({ horario, descricao });
+            }
+
             renderAdminCultos();
             adminCultosForm.reset();
         });
@@ -663,7 +727,17 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
 
             if (!data || !titulo || !texto) return;
 
-            adminEstado.avisos.push({ data, titulo, texto });
+            // CRUD em memória: se estiver editando, substitui; senão adiciona
+            if (adminEstado.editandoAvisosIndex !== null) {
+                const i = adminEstado.editandoAvisosIndex;
+                if (adminEstado.avisos[i]) {
+                    adminEstado.avisos[i] = { ...adminEstado.avisos[i], data, titulo, texto };
+                }
+                adminEstado.editandoAvisosIndex = null;
+            } else {
+                adminEstado.avisos.push({ data, titulo, texto });
+            }
+
             renderAdminAvisos();
             adminAvisosForm.reset();
         });
@@ -677,6 +751,10 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
             }));
             lsSetJson(LS_KEYS.cultos, cultos);
             alert('Horários dos cultos atualizados (Pages offline)!');
+
+            carregarCultosERAvisosDaAPI()
+                .then(dados => renderizarEventosEAvisos(dados))
+                .catch(() => {});
             return;
         }
 
@@ -700,7 +778,11 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
         });
 
         if (!resp.ok) throw new Error('Falha ao salvar cultos');
+
         alert('Horários dos cultos atualizados com sucesso!');
+
+        const dados = await carregarCultosERAvisosDaAPI();
+        renderizarEventosEAvisos(dados);
     }
 
     async function salvarAvisos() {
@@ -712,6 +794,10 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
             }));
             lsSetJson(LS_KEYS.avisos, avisos);
             alert('Avisos atualizados (Pages offline)!');
+
+            carregarCultosERAvisosDaAPI()
+                .then(dados => renderizarEventosEAvisos(dados))
+                .catch(() => {});
             return;
         }
 
@@ -736,7 +822,11 @@ ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
         });
 
         if (!resp.ok) throw new Error('Falha ao salvar avisos');
+
         alert('Avisos atualizados com sucesso!');
+
+        const dados = await carregarCultosERAvisosDaAPI();
+        renderizarEventosEAvisos(dados);
     }
 
     async function baixarPedidosOracaoTxt() {

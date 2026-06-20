@@ -11,7 +11,7 @@ const DADOS_IGREJA = {
   "avisos": [
     { "data": "Domingo", "titulo": "Ensaio", "texto": "Equipe de louvor 10:00." },
     { "data": "Quarta", "titulo": "Ensaio", "texto": "Equipe de Danças e Artes 19:30h." },
-    { "data": "07/06/2026", "titulo": "Jantar de Casais", "texto": "Venha participar do maravilho jantar de casais dia 04/07/2026 19:30h." }
+    { "data": "Sabado", "titulo": "Jantar de Casais", "texto": "Venha participar do maravilho jantar de casais." }
 
   ]
 };

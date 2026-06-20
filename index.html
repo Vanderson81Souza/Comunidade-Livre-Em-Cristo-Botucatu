@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal da Igreja</title>
     <!-- Vinculação do arquivo de estilos externo -->
-    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!--------------------------------------------
-		CABEÇALHO 
-    -------------------------------------------->
+    <!---------------------------------------------
+		 CABEÇALHO 
+      -------------------------------------------->
     <header>
         <div class="header-container">
 <div class="logo-area">
@@ -28,7 +28,6 @@
                 <ul>
                     <li><a class="tab-link active" data-tab="home">Início</a></li>
                     <li><a class="tab-link" data-tab="pastoral">Palavra Pastoral</a></li>
-                    <li><a class="tab-link" data-tab="oracao">Pedidos de Oração</a></li>
                     <li><a class="tab-link" data-tab="eventos">Eventos e Avisos</a></li>
                 </ul>
             </nav>
@@ -36,34 +35,8 @@
     </header>
 
     <!---------------------------------------------
-	MODAL DE LOGIN
-    -------------------------------------------->
-    <div class="modal-overlay hidden" id="loginModal">
-        <div class="modal-content">
-            <button class="modal-close" id="loginModalClose">&times;</button>
-            <h2>Login do Administrador</h2>
-            <form id="adminLoginForm">
-                <div class="form-group">
-                    <label for="adminUsuario">Usuário *</label>
-                    <input type="text" id="adminUsuario" class="form-control" required maxlength="40" placeholder="Informe seu usuário">
-                </div>
-<div class="form-group">
-                    <label for="adminSenha">Senha *</label>
-                    <div class="password-field">
-                        <input type="password" id="adminSenha" class="form-control" required maxlength="40" placeholder="Informe sua senha">
-                        <button type="button" class="password-toggle" id="toggleAdminSenha" aria-label="Mostrar/ocultar senha">
-                            Mostrar
-                        </button>
-                    </div>
-                </div>
-                <button type="submit" class="btn-submit">Entrar</button>
-            </form>
-        </div>
-    </div>
-
-    <!---------------------------------------------
-	CONTEÚDO PRINCIPAL (SPA)
-    -------------------------------------------->
+		CONTEÚDO PRINCIPAL (SPA) 
+      -------------------------------------------->
     <main>
         
         <!-- TELA 1: PRINCIPAL -->
@@ -78,20 +51,44 @@
                 <article class="card">
                     <h2>Nossa Missão</h2>
                     <div class="card-text">
-                        Nossa missão central baseia-se em propagar mensagem do evangelho de Jesus Cristo, acolhimento e transformação espiritual para todas as gerações. Através de ações práticas, orações, reuniões, cultos, buscamos fortalecer laços familiares, construir um ambiente seguro para o crescimento de cada membro frequentador do nosso espaço físico e digital.
+                        Nossa missão central baseia-se em propagar mensagens de esperança, acolhimento e transformação espiritual para todas as gerações. Através de ações práticas e reuniões comunitárias inspiradoras, buscamos fortalecer laços familiares, apoiar quem precisa de suporte emocional e construir um ambiente seguro para o crescimento pessoal de cada membro frequentador do nosso espaço físico e digital.
                     </div>
                 </article>
+
             </div>
 
             <!-- Carrossel de Imagens -->
             <div class="carousel-container">
 	<!-- Carrossel de Imagens com Fotos Locais -->
-	<div class="carousel-track" id="carouselTrack">
-    <div class="carousel-slide" style="background-image: url('imagens/templo2.jpg');"></div>
-  	<div class="carousel-slide" style="background-image: url('imagens/templo1.jpg');"></div>
-  	<div class="carousel-slide" style="background-image: url('imagens/templo3.jpg');"></div>
-	</div>
 
+<div class="carousel-track" id="carouselTrack">
+   <div class="carousel-slide">
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/3aqPNQbSUDk" 
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
+   </div>
+   <div class="carousel-slide">
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/7Cl3Kbyj1bk" 
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
+   </div>
+   <div class="carousel-slide">
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/XDGTeFgKN3M" 
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
+   </div>
+   <div class="carousel-slide">
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/44bERT8FaWQ" 
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
+   </div>
+   <div class="carousel-slide">
+      <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ooNgvciGC0Y" 
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+      </iframe>
+   </div>
+
+            </div>
                 <button class="carousel-btn prev" id="prevBtn" aria-label="Slide anterior">&#10094;</button>
                 <button class="carousel-btn next" id="nextBtn" aria-label="Próximo slide">&#10095;</button>
             </div>
@@ -99,49 +96,19 @@
 
 
     <!---------------------------------------------
-	TELA 2: PALAVRA PASTORAL (LEITURA PÚBLICA)
-    -------------------------------------------->
+	 TELA 2: PALAVRA PASTORAL (AGORA DINÂMICA) 
+      -------------------------------------------->
 
         <section id="pastoral" class="tab-content">
-            <div class="pastoral-container" id="pastoralPublica">
+            <div class="pastoral-container" id="pastoralContainer">
+                <!-- O JavaScript vai colocar um efeito de "Carregando..." aqui -->
                 <p style="color: var(--text-muted);">Buscando palavra pastoral mais recente...</p>
             </div>
         </section>
 
     <!---------------------------------------------
-	TELA 3: PEDIDOS DE ORAÇÃO
-    -------------------------------------------->
-
-        <section id="oracao" class="tab-content">
-            <div class="form-container">
-                <h2>Enviar Pedido de Oração</h2>
-                <p style="color: var(--text-muted); font-size: .9rem; margin-bottom: 1rem;">
-                    Ao enviar, abriremos o WhatsApp para você concluir o pedido.
-                </p>
-                    <div class="form-group">
-                        <label for="nome">Nome completo *</label>
-                        <input type="text" id="nome" class="form-control" required minlength="3" maxlength="80">
-                    </div>
-                    <div class="form-group">
-                        <label for="pedido">Seu Pedido de Oração *</label>
-                        <textarea id="pedido" class="form-control" required minlength="10" maxlength="1000"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="contato">Contato/E-mail (Opcional)</label>
-                        <input type="text" id="contato" class="form-control" maxlength="100">
-                    </div>
-                    <div class="form-group">
-                        <label for="endereco">Endereço (Opcional)</label>
-                        <input type="text" id="endereco" class="form-control" maxlength="150">
-                    </div>
-                    <button type="submit" class="btn-submit">Enviar no WhatsApp</button>
-                </form>
-            </div>
-        </section>
-
-    <!---------------------------------------------
 	TELA 4: EVENTOS E AVISOS (DINÂMICA)
-    -------------------------------------------->
+      -------------------------------------------->
 
         <section id="eventos" class="tab-content">
             <div class="events-grid">
@@ -161,7 +128,9 @@
 
     </main>
 
-
+    <!---------------------------------------------
+		     RODAPÉ
+      -------------------------------------------->
 
     <footer>
         <div class="footer-content">
@@ -184,33 +153,32 @@
             </div>
         </div>
         <div class="footer-bottom">
-            &copy; 2026 Igreja Comunidade Livres em Cristo BTU. Todos os direitos reservados.
+            &copy; 2026 Igreja Comunitária. Todos os direitos reservados.
         </div>
     </footer>
 
     <!---------------------------------------------
-		WHATSAPP FLUTUANTE
-    -------------------------------------------->
+		  WHATSAPP FLUTUANTE
+      -------------------------------------------->
 
-    <a href="https://wa.me" class="whatsapp-float" target="_blank" rel="noopener noreferrer" title="Fale Conosco no WhatsApp">
-    &#128172;
+    <a href="https://wa.me/5514997392172" class="whatsapp-float" target="_blank" rel="noopener noreferrer" title="Fale Conosco no WhatsApp">
+        &#128172;
     </a>
 
     <!---------------------------------------------
-		BANNER LGPD
-    -------------------------------------------->
+		  BANNER LGPD
+      -------------------------------------------->
 
     <div class="lgpd-banner" id="lgpdBanner">
-        <span>Respeitamos sua privacidade. Os dados enviados nos formulários de oração são tratados de maneira confidencial e protegida.</span>
+        <span>Respeitamos sua privacidade. Os dados enviados em formulários são tratados de maneira confidencial e protegida.</span>
         <button class="lgpd-btn" id="lgpdAccept">Entendi e Aceito</button>
     </div>
 
-    <!-- Scripts (ordem importa: módulos separados primeiro) -->
-    <script src="pastoral-atualizacao.js"></script>
-    <script src="eventos-horarios-atualizacao.js"></script>
+    <!-- Vinculação do arquivo lógico de scripts no final do body -->
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 

@@ -1,52 +1,20 @@
 // =========================================================================
-// 📡 Config da API (Python + SQLite)
+// 📋 ÁREA DE ATUALIZAÇÃO RÁPIDA (MODIFIQUE APENAS OS TEXTOS ABAIXO)
 // =========================================================================
-const API_BASE_URL = 'http://127.0.0.1:5000';
-let ADMIN_TOKEN = null;
-let adminSessionExpiresAt = null;
+const DADOS_IGREJA = {
+  "cultos": [
+    { "horario": "Domingo - 18:00h", "descricao": "Culto de Celebração e Família" },
+    { "horario": "Terça-feira - 20:00h", "descricao": "Primeiro o Reino" },
+    { "horario": "Quinta-feira - 19:30h", "descricao": "Estudo Biblico" }
+    // Você pode adicionar ou remover linhas aqui seguindo o mesmo padrão!
+  ],
+  "avisos": [
+    { "data": "Domingo", "titulo": "Ensaio", "texto": "Equipe de louvor 10:00." },
+    { "data": "Quarta", "titulo": "Ensaio", "texto": "Equipe de Danças e Artes 19:30h." },
+    { "data": "07/06/2026", "titulo": "Jantar de Casais", "texto": "Venha participar do maravilho jantar de casais dia 04/07/2026 19:30h." }
 
-// =========================================================================
-// 0. MODO GITHUB PAGES (OFFLINE)
-// =========================================================================
-const IS_PAGES = (() => {
-    const host = (location && location.hostname) ? location.hostname : '';
-    return host && host !== '127.0.0.1' && host !== 'localhost';
-})();
-
-const LS_KEYS = {
-    cultos: 'pages_cultos',
-    avisos: 'pages_avisos',
-    pedidosOracao: 'pages_pedidos_oracao',
-    adminOffline: 'pages_admin_offline'
+  ]
 };
-
-const DEFAULT_CULTOS = [
-    { id: 1, horario: 'Domingo - 18:00h', descricao: 'Culto de Celebração e Família' },
-    { id: 2, horario: 'Terça-feira - 20:00h', descricao: 'Primeiro o Reino' },
-    { id: 3, horario: 'Quinta-feira - 19:30h', descricao: 'Estudo Biblico' }
-];
-
-const DEFAULT_AVISOS = [
-    { id: 1, data: 'Domingo', titulo: 'Ensaio', texto: 'Equipe de louvor 10:00.' },
-    { id: 2, data: 'Quarta', titulo: 'Ensaio', texto: 'Equipe de Danças e Artes 19:30h.' },
-    { id: 3, data: '07/06/2026', titulo: 'Jantar de Casais', texto: 'Venha participar do maravilho jantar de casais dia 04/07/2026 19:30h.' }
-];
-
-function lsGetJson(key, fallback) {
-    try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return fallback;
-        const parsed = JSON.parse(raw);
-        return parsed ?? fallback;
-    } catch (_) {
-        return fallback;
-    }
-}
-
-function lsSetJson(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
-}
-
 
 // =========================================================================
 // 1. NAVEGAÇÃO SPA (TROCA DE ABAS)
@@ -100,101 +68,10 @@ prevBtn.addEventListener('click', () => {
     updateCarousel();
 });
 
-// =========================================================================
-// 4. VALIDAÇÃO E SEGURANÇA (FORMULÁRIO)
-// =========================================================================
-const form = document.getElementById('prayerForm');
-const adminPastoralForm = document.getElementById('adminPastoralForm');
-
-// =========================================================================
-// 4.1 WHATSAPP (GitHub Pages não tem backend)
-// =========================================================================
-const WHATSAPP_PHONE_E164 = '+5514996143354';
-
-function construirMensagemWhatsApp({ nome, pedido, contato, endereco }) {
-    const linhas = [
-        'Olá! Gostaria de enviar um pedido de oração.',
-        '',
-        `Nome: ${nome || ''}`,
-        `Pedido: ${pedido || ''}`,
-        `Contato/E-mail: ${contato || ''}`,
-        `Endereço: ${endereco || ''}`
-    ];
-
-    return linhas.join('\n').trim();
-}
-
-function abrirWhatsAppComMensagem({ nome, pedido, contato, endereco }) {
-    const texto = construirMensagemWhatsApp({ nome, pedido, contato, endereco });
-    const url = `https://wa.me/${WHATSAPP_PHONE_E164.replace('+', '')}?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-}
-
 function sanitizeInput(text) {
     const element = document.createElement('div');
     element.innerText = text;
     return element.innerHTML;
-}
-
-// Pedidos de Oração: enviar via API (SQLite) — sem WhatsApp (mantido como no seu projeto)
-function montarPayloadPedidoOracao({ nome, pedido, contato, endereco }) {
-    return {
-        nome: nome || '',
-        pedido: pedido || '',
-        contato: contato || '',
-        endereco: endereco || ''
-    };
-}
-
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const nome = sanitizeInput(document.getElementById('nome').value.trim());
-    const pedido = sanitizeInput(document.getElementById('pedido').value.trim());
-    const contato = sanitizeInput(document.getElementById('contato').value.trim());
-    const endereco = sanitizeInput(document.getElementById('endereco').value.trim());
-
-    abrirWhatsAppComMensagem({ nome, pedido, contato, endereco });
-
-    alert('Abrimos o WhatsApp para você enviar o pedido de oração.');
-    form.reset();
-});
-
-if (adminPastoralForm) {
-    adminPastoralForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const cargo = sanitizeInput(document.getElementById('adminCargoPastor').value.trim());
-        const nome = sanitizeInput(document.getElementById('adminNomePastor').value.trim());
-        const data = document.getElementById('adminDataPastoral').value.trim();
-        const palavra = sanitizeInput(document.getElementById('adminTextoPastoral').value.trim()).replace(/\n/g, '<br>');
-
-        if (!cargo || !nome || !data || !palavra) {
-            alert('Por favor, preencha todos os campos para publicar a palavra pastoral.');
-            return;
-        }
-
-        const novapalavra = {
-            cargo,
-            nomePastor: nome,
-            dataPublicacao: formatarData(data),
-            textoPastoral: palavra,
-            fotoUrl: bancoDeDadosSimulado.fotoUrl
-        };
-
-        localStorage.setItem('palavraPastoralAtual', JSON.stringify(novapalavra));
-
-        renderizarPalavraPastoral(novapalavra, 'adminPreview');
-        renderizarPalavraPastoral(novapalavra, 'pastoralPublica');
-
-        alert('Palavra pastoral publicada com sucesso! Os leitores já podem visualizá-la.');
-        adminPastoralForm.reset();
-    });
-}
-
-function formatarData(data) {
-    const [ano, mes, dia] = data.split('-');
-    return `${dia}/${mes}/${ano}`;
 }
 
 // =========================================================================
@@ -202,6 +79,8 @@ function formatarData(data) {
 // =========================================================================
 const lgpdBanner = document.getElementById('lgpdBanner');
 const lgpdAccept = document.getElementById('lgpdAccept');
+
+
 
 if (localStorage.getItem('lgpdAceito') === 'true') {
     lgpdBanner.style.display = 'none';
@@ -214,30 +93,91 @@ lgpdAccept.addEventListener('click', () => {
 });
 
 // =========================================================================
-// 6. DISPARO INICIAL (CARREGAMENTO DA PÁGINA)
+// 6. SIMULAÇÃO DE API - MENSAGEM PASTORAL
 // =========================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    ADMIN_TOKEN = localStorage.getItem(ADMIN_TOKEN_KEY);
+const bancoDeDadosSimulado = {
+    nomePastor: "Pr. Rodrigo Aviles",
+    fotoUrl: "imagens/biblia.png", 
+    dataPublicacao: "Publicado em: 10/06/2026",
+    textoPastoral: `Querida comunidade, é com muita alegria que compartilhamos esta palavra semanal de reflexão. Vivemos tempos onde encontrar momentos de paz e conexão genuína tornou-se uma prioridade essencial para manter nosso equilíbrio e nossa esperança renovados.<br><br>Independentemente dos desafios que surjam em sua rotina, lembre-se de que nenhum caminho precisa ser percorrido de forma solitária. Nossas portas e corações estão sempre abertos para ouvir, apoiar e caminhar ao seu lado em cada etapa necessária.<br><br>A graça de Deus é o amor incondicional que oferece perdão e salvação ao pecador, sem que ele mereça. Ela transforma vidas, substituindo a culpa pela paz e o julgamento pela restauração espiritual. Esse favor imerecido serve como uma ponte que reconcilia o ser humano com o Criador. Por meio dela, o arrependimento abre as portas para um recomeço cheio de esperança. É o maior presente divino, acessível a qualquer um que decida acolhê-la de coração.<br><br>"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus." (Efésios 2:8).<br><br>Deus te abençoe como toda sorte de bençãos!.`
+};
 
-    // Palavra Pastoral (funções definidas no pastoral-atualizacao.js)
-    if (typeof carregarUltimaPalavraPastoral === 'function') {
-        carregarUltimaPalavraPastoral();
+function renderizarPalavraPastoral(dados) {
+    const container = document.getElementById('pastoralContainer');
+    if (!container) return;
+    
+    const nomeLimpo = sanitizeInput(dados.nomePastor);
+    const dataLimpa = sanitizeInput(dados.dataPublicacao);
+    
+    container.innerHTML = `
+        <div style="display: inline-block;">
+            <div class="pastor-photo" style="background: #cbd5e1 url('${dados.fotoUrl}') center/cover;"></div>
+        </div>
+        <h2>Mensagem do Pastor</h2>
+        <p style="color: var(--text-muted); font-style: italic;">Por: ${nomeLimpo} | ${dataLimpa}</p>
+        <div class="pastoral-text">
+            <p>${dados.textoPastoral}</p>
+        </div>
+    `;
+}
+
+function carregarPalavraPastoralDaAPI() {
+    new Promise((resolve) => {
+        setTimeout(() => { resolve(bancoDeDadosSimulado); }, 1000);
+    })
+    .then((dadosRecebidos) => { renderizarPalavraPastoral(dadosRecebidos); });
+}
+
+// =========================================================================
+// 7. RENDERIZAÇÃO LOCAL DE EVENTOS E AVISOS (COMPATÍVEL COM ABERTURA DIRETA)
+// =========================================================================
+function renderizarEventosEAvisos(dados) {
+    const cultosContainer = document.getElementById('cultosContainer');
+    const avisosContainer = document.getElementById('avisosContainer');
+
+    // --- RENDERIZAR CULTOS ---
+    if (cultosContainer) {
+        let htmlCultos = '<h2>Horário dos Cultos</h2>';
+        dados.cultos.forEach(culto => {
+            const horarioLimpo = sanitizeInput(culto.horario);
+            const descLimpa = sanitizeInput(culto.descricao);
+            
+            htmlCultos += `
+                <div class="culto-item">
+                    <p class="culto-time">${horarioLimpo}</p>
+                    <p>${descLimpa}</p>
+                </div>
+            `;
+        });
+        cultosContainer.innerHTML = htmlCultos;
     }
 
-    // Renderiza eventos/avisos no modo GitHub Pages (funções definidas no eventos-horarios-atualizacao.js)
-    (async () => {
-        try {
-            if (typeof renderizarEventosEAvisos === 'function') {
-                const cultos = lsGetJson(LS_KEYS.cultos, DEFAULT_CULTOS);
-                const avisos = lsGetJson(LS_KEYS.avisos, DEFAULT_AVISOS);
-                renderizarEventosEAvisos({ cultos, avisos });
-            }
-        } catch (err) {
-            const cultosContainer = document.getElementById('cultosContainer');
-            const avisosContainer = document.getElementById('avisosContainer');
-            if (cultosContainer) cultosContainer.innerHTML = '<h2>Horário dos Cultos</h2><p style="color: var(--text-muted);">Não foi possível carregar os horários.</p>';
-            if (avisosContainer) avisosContainer.innerHTML = '<h2>Quadro de Avisos Gerais</h2><p style="color: var(--text-muted);">Não foi possível carregar os avisos.</p>';
-        }
-    })();
+    // --- RENDERIZAR AVISOS ---
+    if (avisosContainer) {
+        let htmlAvisos = '<h2>Quadro de Avisos Gerais</h2>';
+        dados.avisos.forEach(aviso => {
+            const dataLimpa = sanitizeInput(aviso.data);
+            const tituloLimpo = sanitizeInput(aviso.titulo);
+            const textoLimpo = sanitizeInput(aviso.texto);
+            
+            htmlAvisos += `
+                <div class="notice-item">
+                    <p class="notice-date">Publicado em: ${dataLimpa}</p>
+                    <p><strong>${tituloLimpo}:</strong> ${textoLimpo}</p>
+                </div>
+            `;
+        });
+        avisosContainer.innerHTML = htmlAvisos;
+    }
+}
+
+// =========================================================================
+// 8. DISPARO INICIAL (CARREGAMENTO DA PÁGINA)
+// =========================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    carregarPalavraPastoralDaAPI();
+    // Puxa as informações direto do topo deste arquivo, sem usar Fetch/Rede
+    renderizarEventosEAvisos(DADOS_IGREJA); 
 });
+
 

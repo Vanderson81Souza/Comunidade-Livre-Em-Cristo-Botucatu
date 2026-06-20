@@ -30,7 +30,6 @@
                     <li><a class="tab-link" data-tab="pastoral">Palavra Pastoral</a></li>
                     <li><a class="tab-link" data-tab="oracao">Pedidos de Oração</a></li>
                     <li><a class="tab-link" data-tab="eventos">Eventos e Avisos</a></li>
-                    <li><a href="#" id="loginBtn" class="login-link">Login Admin</a></li>
                 </ul>
             </nav>
         </div>
@@ -116,7 +115,9 @@
         <section id="oracao" class="tab-content">
             <div class="form-container">
                 <h2>Enviar Pedido de Oração</h2>
-                <form id="prayerForm">
+                <p style="color: var(--text-muted); font-size: .9rem; margin-bottom: 1rem;">
+                    Ao enviar, abriremos o WhatsApp para você concluir o pedido.
+                </p>
                     <div class="form-group">
                         <label for="nome">Nome completo *</label>
                         <input type="text" id="nome" class="form-control" required minlength="3" maxlength="80">
@@ -133,7 +134,7 @@
                         <label for="endereco">Endereço (Opcional)</label>
                         <input type="text" id="endereco" class="form-control" maxlength="150">
                     </div>
-                    <button type="submit" class="btn-submit">Enviar Pedido com Segurança</button>
+                    <button type="submit" class="btn-submit">Enviar no WhatsApp</button>
                 </form>
             </div>
         </section>
@@ -160,112 +161,7 @@
 
     </main>
 
-    <!---------------------------------------------
-	SEÇÃO ADMIN (OCULTA ATÉ LOGIN)
-    -------------------------------------------->
-    <section id="admin" class="admin-section hidden">
-        <div class="admin-header">
-            <h1>Painel Administrativo</h1>
-            <button id="logoutBtn" class="btn-logout">Sair</button>
-        </div>
-            <div class="admin-content">
 
-            	<div class="admin-form-section">
-                <h2>Gerenciar Horários dos Cultos</h2>
-
-                <form id="adminCultosForm" autocomplete="off">
-                    <div class="form-group">
-                        <label for="adminCultoHorario">Horário *</label>
-                        <input type="text" id="adminCultoHorario" class="form-control" required maxlength="80" placeholder="Ex: Domingo - 18:00h">
-                    </div>
-                    <div class="form-group">
-                        <label for="adminCultoDescricao">Descrição *</label>
-                        <input type="text" id="adminCultoDescricao" class="form-control" required maxlength="120" placeholder="Ex: Culto de Celebração e Família">
-                    </div>
-                    <button type="submit" class="btn-submit">Adicionar ao Quadro</button>
-                </form>
-
-                <div style="margin-top: 1.5rem;">
-                    <h3 style="color: var(--primary); margin-bottom: .75rem;">Cultos atuais</h3>
-                    <div id="adminCultosLista" style="display:flex; flex-direction:column; gap: .75rem;"></div>
-                    <button id="adminCultosSalvar" class="btn-submit" style="margin-top: 1rem; width:100%;">Salvar alterações</button>
-                </div>
-
-                <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-                <h2>Gerenciar Avisos</h2>
-
-                <p style="color: var(--text-muted); font-size: .9rem; margin-bottom: 1rem;">Os avisos são salvos no SQLite e exibidos publicamente na tela Eventos e Avisos.</p>
-
-                <form id="adminAvisosForm" autocomplete="off">
-
-                    <div class="form-group">
-                        <label for="adminAvisoData">Data *</label>
-                        <input type="text" id="adminAvisoData" class="form-control" required maxlength="40" placeholder="Ex: Domingo ou 07/06/2026">
-                    </div>
-                    <div class="form-group">
-                        <label for="adminAvisoTitulo">Título *</label>
-                        <input type="text" id="adminAvisoTitulo" class="form-control" required maxlength="120" placeholder="Ex: Ensaio">
-                    </div>
-                    <div class="form-group">
-                        <label for="adminAvisoTexto">Texto *</label>
-                        <textarea id="adminAvisoTexto" class="form-control" required minlength="5" maxlength="2000" placeholder="Digite o conteúdo do aviso."></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit">Adicionar ao Quadro</button>
-                </form>
-
-                <div style="margin-top: 1.5rem;">
-                    <h3 style="color: var(--primary); margin-bottom: .75rem;">Avisos atuais</h3>
-                    <div id="adminAvisosLista" style="display:flex; flex-direction:column; gap: .75rem;"></div>
-                    <div style="display:flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap;">
-                        <button id="adminAvisosSalvar" class="btn-submit" style="width: 100%;">Salvar alterações</button>
-                    </div>
-                </div>
-
-                <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-                <h2>Pedidos de Oração</h2>
-                <p style="color: var(--text-muted); font-size: .9rem; margin-bottom: 1rem;">
-                    Baixe os pedidos de oração registrados em arquivo TXT (UTF-8). Pedidos antigos são removidos automaticamente após 1 mês.
-                </p>
-                <div style="display:flex; gap: .75rem; flex-wrap: wrap;">
-                    <button id="adminPedidosOracaoBaixar" class="btn-submit" style="width: 100%; max-width: 420px;">Baixar pedidos de oração (.txt)</button>
-                </div>
-
-                <hr style="border: none; border-top: 1px solid var(--border); margin: 1.5rem 0;">
-
-                <h2>Gerar Nova Palavra Pastoral</h2>
-                <form id="adminPastoralForm">
-
-
-                    <div class="form-group">
-                        <label for="adminCargoPastor">Cargo *</label>
-                        <input type="text" id="adminCargoPastor" class="form-control" required maxlength="60" placeholder="Ex: Pastor, Líder, Missionário">
-                    </div>
-                    <div class="form-group">
-                        <label for="adminNomePastor">Nome *</label>
-                        <input type="text" id="adminNomePastor" class="form-control" required maxlength="80" placeholder="Ex: Pr. Rodrigo Aviles">
-                    </div>
-                    <div class="form-group">
-                        <label for="adminDataPastoral">Data *</label>
-                        <input type="date" id="adminDataPastoral" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminTextoPastoral">Palavra *</label>
-                        <textarea id="adminTextoPastoral" class="form-control" required minlength="20" maxlength="2000" placeholder="Digite a mensagem que será exibida como palavra pastoral."></textarea>
-                    </div>
-                    <button type="submit" class="btn-submit">Publicar Palavra Pastoral</button>
-                </form>
-            </div>
-
-            <div class="admin-preview-section">
-                <h2>Prévia</h2>
-                <div class="pastoral-container" id="adminPreview">
-                    <p style="color: var(--text-muted);">A prévia aparecerá aqui.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <footer>
         <div class="footer-content">
@@ -309,7 +205,9 @@
         <button class="lgpd-btn" id="lgpdAccept">Entendi e Aceito</button>
     </div>
 
-    <!-- Vinculação do arquivo lógico de scripts no final do body -->
+    <!-- Scripts (ordem importa: módulos separados primeiro) -->
+    <script src="pastoral-atualizacao.js"></script>
+    <script src="eventos-horarios-atualizacao.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

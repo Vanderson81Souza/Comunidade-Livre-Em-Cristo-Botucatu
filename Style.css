@@ -405,7 +405,7 @@ footer {
         right: 0;
         background-color: var(--bg-card);
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        border-top: 1px solid var(--border);
+        padding: 1rem;
     }
 
     nav.open {
@@ -414,8 +414,8 @@ footer {
 
     nav ul {
         flex-direction: column;
-        gap: 0;
-        padding: 1rem 0;
+        gap: 1rem;
+        align-items: center;
     }
 
     nav ul li a {
@@ -433,67 +433,6 @@ footer {
         height: 250px;
     }
 
-  /* --- BANNER LGPD --- */
-.lgpd-banner {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #1e293b;
-    color: white;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    z-index: 1000;
-    transition: transform 0.3s ease;
-}
-
-.lgpd-btn {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: var(--transition);
-}
-
-.lgpd-btn:hover {
-    background-color: var(--primary-hover);
-}
-
-/* --- RESPONSIVIDADE (MOBILE) --- */
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: flex; /* Exibe o botão hambúrguer no mobile */
-    }
-
-    nav {
-        display: none; /* Esconde o menu padrão */
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: var(--bg-card);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        padding: 1rem;
-    }
-
-    /* Esta é a classe que o seu JS ativa e que estava faltando */
-    nav.open {
-        display: block; 
-    }
-
-    nav ul {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: center;
-    }
-
     .header-container {
         position: relative;
     }
@@ -501,7 +440,9 @@ footer {
     .lgpd-banner {
         flex-direction: column;
         text-align: center;
+        gap: 1rem;
     }
 }
+
 
 

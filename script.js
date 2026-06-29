@@ -145,7 +145,7 @@ function renderizarEventosEAvisos(dados) {
             
             htmlAvisos += `
                 <div class="notice-item">
-                    <p class="notice-date">Data : ${dataLimpa}</p>
+                    <p class="notice-date">Em: ${dataLimpa}</p>
                     <p><strong>${tituloLimpo}:</strong> ${textoLimpo}</p>
                 </div>
             `;

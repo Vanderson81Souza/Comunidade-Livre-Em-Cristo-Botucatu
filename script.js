@@ -1,20 +1,8 @@
 // =========================================================================
-// 📋 ÁREA DE ATUALIZAÇÃO RÁPIDA (MODIFIQUE APENAS OS TEXTOS ABAIXO)
+// 📋 DADOS CARREGADOS DE ARQUIVOS EXTERNOS
+// dadosPalavra - palavra.js (nome do pastor, foto, data, texto)
+// dadosEventos - eventos.js (cultos e avisos)
 // =========================================================================
-const DADOS_IGREJA = {
-  "cultos": [
-    { "horario": "Domingo - 18:00h", "descricao": "Culto de Celebração e Família" },
-    { "horario": "Terça-feira - 20:00h", "descricao": "Primeiro o Reino" },
-    { "horario": "Quinta-feira - 19:30h", "descricao": "Estudo Biblico" }
-    // Você pode adicionar ou remover linhas aqui seguindo o mesmo padrão!
-  ],
-  "avisos": [
-    { "data": "Domingo", "titulo": "Ensaio", "texto": "Equipe de louvor 10:00." },
-    { "data": "Quarta", "titulo": "Ensaio", "texto": "Equipe de Danças e Artes 19:30h." },
-    { "data": "Sabado", "titulo": "Jantar de Casais", "texto": "Venha participar do maravilho jantar de casais." }
-
-  ]
-};
 
 // =========================================================================
 // 1. NAVEGAÇÃO SPA (TROCA DE ABAS)
@@ -93,14 +81,8 @@ lgpdAccept.addEventListener('click', () => {
 });
 
 // =========================================================================
-// 6. SIMULAÇÃO DE API - MENSAGEM PASTORAL
+// 6. CARREGAR DADOS DA PALAVRA PASTORAL (palavra.js)
 // =========================================================================
-const bancoDeDadosSimulado = {
-    nomePastor: "Pr. Rodrigo Aviles",
-    fotoUrl: "imagens/biblia.png", 
-    dataPublicacao: "Publicado em: 10/06/2026",
-    textoPastoral: `Querida comunidade, é com muita alegria que compartilhamos esta palavra semanal de reflexão. Vivemos tempos onde encontrar momentos de paz e conexão genuína tornou-se uma prioridade essencial para manter nosso equilíbrio e nossa esperança renovados.<br><br>Independentemente dos desafios que surjam em sua rotina, lembre-se de que nenhum caminho precisa ser percorrido de forma solitária. Nossas portas e corações estão sempre abertos para ouvir, apoiar e caminhar ao seu lado em cada etapa necessária.<br><br>A graça de Deus é o amor incondicional que oferece perdão e salvação ao pecador, sem que ele mereça. Ela transforma vidas, substituindo a culpa pela paz e o julgamento pela restauração espiritual. Esse favor imerecido serve como uma ponte que reconcilia o ser humano com o Criador. Por meio dela, o arrependimento abre as portas para um recomeço cheio de esperança. É o maior presente divino, acessível a qualquer um que decida acolhê-la de coração.<br><br>"Porque pela graça sois salvos, por meio da fé; e isto não vem de vós, é dom de Deus." (Efésios 2:8).<br><br>Deus te abençoe como toda sorte de bençãos!.`
-};
 
 function renderizarPalavraPastoral(dados) {
     const container = document.getElementById('pastoralContainer');
@@ -122,8 +104,9 @@ function renderizarPalavraPastoral(dados) {
 }
 
 function carregarPalavraPastoralDaAPI() {
+    // Carrega dados do arquivo palavra.js
     new Promise((resolve) => {
-        setTimeout(() => { resolve(bancoDeDadosSimulado); }, 1000);
+        setTimeout(() => { resolve(dadosPalavra); }, 500);
     })
     .then((dadosRecebidos) => { renderizarPalavraPastoral(dadosRecebidos); });
 }
@@ -176,8 +159,8 @@ function renderizarEventosEAvisos(dados) {
 // =========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     carregarPalavraPastoralDaAPI();
-    // Puxa as informações direto do topo deste arquivo, sem usar Fetch/Rede
-    renderizarEventosEAvisos(DADOS_IGREJA); 
+    // Carrega dados do arquivo eventos.js
+    renderizarEventosEAvisos(dadosEventos); 
 });
 
 
